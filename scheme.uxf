@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>140</x>
+      <y>440</y>
+      <w>210</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>rosWebSocketTunnel. .. 
+.showTopicTest
+
+--
+websocket:
+ws://localhost:9090
+--
+on_message
+--
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>170</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Browser
+
+--
+sensor.html
+--
+onMessage
+--
+subscribe
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>340</x>
+      <y>230</y>
+      <w>200</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+fg=green</panel_attributes>
+    <additional_attributes>180.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>90</x>
+      <y>230</y>
+      <w>300</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;.
+fg=green</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0;10.0;170.0;280.0;170.0;280.0;100.0;260.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>140</x>
+      <y>180</y>
+      <w>210</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>sensorApp.consumers
+
+--
+websocket:
+ws://[ip]/ws/sensor/
+--
+receive
+    if from sensor
+    if from browser
+--
+sensor_message
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>50</x>
+      <y>270</y>
+      <w>340</w>
+      <h>380</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+fg=blue</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0;10.0;360.0;320.0;360.0;320.0;270.0;300.0;270.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>510</x>
+      <y>450</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>rosbridge_server
+
+--
+websocket:
+ws://localhost:9090</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>340</x>
+      <y>500</y>
+      <w>190</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-&gt;&gt;&gt;</panel_attributes>
+    <additional_attributes>170.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>110</x>
+      <y>270</y>
+      <w>300</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+fg=green</panel_attributes>
+    <additional_attributes>30.0;50.0;10.0;50.0;10.0;100.0;280.0;100.0;280.0;10.0;240.0;10.0</additional_attributes>
+  </element>
+</diagram>

@@ -16,19 +16,22 @@ except ImportError:
     import _thread as thread
 # import json
 
-topic = "/my_topic"
+topic = "/hc04"
 channel_layer = get_channel_layer()
 
 def on_message(ws, message_json):
     message_dict = rbj.get_message_from_json(message_json)
+    print(message_dict)
     message = message_dict.get("msg").get("data")
+    print(message)
     # forward message to Django Channel layer
     # filters could be applied here
+    # messages come from sensorApp.consumers
     async_to_sync(channel_layer.group_send)(
         'sensorGroup',
         {'type': 'sensor_message', 'message': message}
     )
-    print(message)
+    
     
 def on_error(ws, error):
     print("There was an error:")

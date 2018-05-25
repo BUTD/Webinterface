@@ -5,6 +5,9 @@
     <title>Sensor</title>
 </head>
 <body>
+	ROS topic: <input type="text" id="rosTopic">
+	<input type="button" value="Subscribe" onclick="subscribeToTopic()">
+	<p id="returnMessage"></p>
     <textarea id="sensor-log" cols="50" rows="40"></textarea><br/>
 </body>
 <script>
@@ -22,5 +25,14 @@
     sensorSocket.onclose = function(e) {
         console.error('Sensor socket closed unexpectedly');
     };
+    
+    function subscribeToTopic() {
+    	var topic, returnMessage;
+    	topic = document.getElementById("rosTopic").value;
+    	returnMessage = "Subscribed to topic " + topic;
+    	document.getElementById("returnMessage").innerHTML = returnMessage;
+    	// send request to websocket consumer
+    	sensorSocket.send('{"type":"subscribe_to_topic", "message":"'+topic+'"}')
+    }
 </script>
 </html>
