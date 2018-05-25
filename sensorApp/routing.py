@@ -9,3 +9,7 @@ from sensorApp import consumers
 websocket_urlpatterns = [
     url(r'^ws/sensor/$', consumers.SensorConsumer),
     ]
+
+channel_routes = {
+    'request_to_ROS': consumers.WebsocketTunnelConsumer,
+    }

@@ -42,11 +42,6 @@ def on_open(ws):
     def run(*args):
         print('Subscribing to topic "%s"' % (topic))
         ws.send(rbj.get_json_subscribe(topic))
-#         time.sleep(5)
-#         print('Unsubscribe from topic "%s"' % (topic))
-#         ws.send(rbj.get_json_unsubscribe(topic))
-#         ws.close()
-#         print("thread terminating...")
     thread.start_new_thread(run, ())
 
 def on_close(ws):
