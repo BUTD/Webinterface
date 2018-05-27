@@ -4,7 +4,7 @@ Created on May 18, 2018
 @author: benjamin
 '''
 from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
+from channels.routing import ProtocolTypeRouter, URLRouter
 import sensorApp.routing
 
 application = ProtocolTypeRouter({
@@ -13,7 +13,4 @@ application = ProtocolTypeRouter({
             sensorApp.routing.websocket_urlpatterns
         )
     ),
-    'channel': ChannelNameRouter(
-        sensorApp.routing.channel_routes
-        )
     })

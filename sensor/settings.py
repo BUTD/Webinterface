@@ -36,8 +36,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'channels',
     'sensorApp',
-    'sensorSimulator',
-    'rosWebSocketTunnel',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -127,15 +125,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # channels
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "asgi_redis.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [os.environ.get('REDIS_URL','redis://localhost:6379')],
-#              },
-#         "ROUTING": "routing.channel_routing",
-#         },
-#     }
 ASGI_APPLICATION = 'sensor.routing.application'
 CHANNEL_LAYERS = {
     'default':{

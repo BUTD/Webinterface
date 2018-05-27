@@ -8,7 +8,10 @@
 	ROS topic: <input type="text" id="rosTopic">
 	<input type="button" value="Subscribe" onclick="subscribeToTopic()">
 	<p id="returnMessage"></p>
-    <textarea id="sensor-log" cols="50" rows="40"></textarea><br/>
+	<p id="topicSelectors">
+		<input id="checkBox" type="checkbox">&sol;hc04
+	</p>
+    <textarea id="sensor-log" cols="50" rows="20"></textarea><br/>
 </body>
 <script>
     var sensorSocket = new WebSocket(

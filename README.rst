@@ -26,3 +26,5 @@ browse to http://127.0.0.1:8000/sensorapp/sensor/
 TO DO:
 test server with access in local network
 deployment
+
+only one consumer!
