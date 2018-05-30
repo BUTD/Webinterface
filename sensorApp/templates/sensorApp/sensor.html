@@ -6,13 +6,17 @@
 </head>
 <body>
 	ROS topic: <input type="text" id="rosTopic">
-	<input type="button" value="Subscribe" onclick="subscribeToTopic()">
-	<p id="returnMessage"></p>
+	<input type="button" value="Subscribe" onclick="subscribeToTopicFromTextField()">
+	{% for this_topic in topics %}
 	<p id="topicSelectors">
-		<input id="checkBox" type="checkbox">&sol;hc04
+		<input id="checkBox" name="{{this_topic}}" type="checkbox" onclick="callbackClickTopic(this)">{{this_topic}}
 	</p>
+	{% endfor %}
+	<input type="button" value="Send Hello" onclick="callbackClickPublishHello()">
+	<p id="returnMessage"></p>
     <textarea id="sensor-log" cols="50" rows="20"></textarea><br/>
 </body>
+
 <script>
     var sensorSocket = new WebSocket(
         'ws://' + window.location.host + '/ws/sensor/');
@@ -29,13 +33,42 @@
         console.error('Sensor socket closed unexpectedly');
     };
     
-    function subscribeToTopic() {
-    	var topic, returnMessage;
+    function subscribeToTopicFromTextField() {
+    	var topic;
     	topic = document.getElementById("rosTopic").value;
+    	subscribeToTopic(topic);
+    }
+    
+    function subscribeToTopic(topic) {
+    	var returnMessage;
     	returnMessage = "Subscribed to topic " + topic;
     	document.getElementById("returnMessage").innerHTML = returnMessage;
     	// send request to websocket consumer
     	sensorSocket.send('{"type":"subscribe_to_topic", "message":"'+topic+'"}')
+    }
+    
+    function unsubscribeFromTopic(topic) {
+    	var returnMessage;
+    	returnMessage = "Unsubscribed from topic " + topic;
+    	document.getElementById("returnMessage").innerHTML = returnMessage;
+    	// send request to websocket consumer
+    	sensorSocket.send('{"type":"unsubscribe_from_topic", "message":"'+topic+'"}')
+    }
+    
+    function callbackClickTopic(e){
+    	if (e.checked){
+    		subscribeToTopic(e.name);
+    	}
+    	else{
+    		unsubscribeFromTopic(e.name);
+    	}
+    }
+    
+    function callbackClickPublishHello(){
+    	topic = "/hc04";
+    	message = "Hello from button!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
     }
 </script>
 </html>

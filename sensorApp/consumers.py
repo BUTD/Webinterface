@@ -73,4 +73,9 @@ class SensorConsumer(WebsocketConsumer):
                 self.ros_websocket.send(rbj.get_json_subscribe(message))
             else:
                 print("Topic " + message + " not allowed!")
+        elif type_of_message == "unsubscribe_from_topic":
+            self.ros_websocket.send(rbj.get_json_unsubscribe(message))
+        elif type_of_message == "publish_to_topic":
+            topic = text_data_json['topic']
+            self.ros_websocket.send(rbj.get_json_publish_string(topic, message))
                 
