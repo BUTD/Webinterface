@@ -6,7 +6,7 @@ Created on May 18, 2018
 #from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer 
 import json
-from .topics import ALLOWED_TOPICS_READ
+from .topics import ALLOWED_TOPICS_READ, ALLOWED_TOPICS_WRITE
 
 import websocket
 from . import ros_bridge_json as rbj
@@ -24,8 +24,9 @@ class SensorConsumer(WebsocketConsumer):
             # is called on incoming message from ROS's websocket
             print("Received message from ROS...")
             message_dict = rbj.get_message_from_json(message_json)
-            message = message_dict.get("msg").get("data")
-            print(message)
+            # message = message_dict.get("msg").get("data")
+            message = message_dict.get("msg")
+            print(message_dict.get("msg"))
             # send to web page
             self.send(text_data=json.dumps({
                 'message': message
@@ -67,15 +68,20 @@ class SensorConsumer(WebsocketConsumer):
         # ROS if allowed
         
         # Send message to ROS's websocket
+        # subscribe to ROS topic
         if type_of_message == "subscribe_to_topic":
             if message in ALLOWED_TOPICS_READ:
                 print("Topic allowed!")
                 self.ros_websocket.send(rbj.get_json_subscribe(message))
             else:
                 print("Topic " + message + " not allowed!")
+        # unscubscribe from ROS topic
         elif type_of_message == "unsubscribe_from_topic":
-            self.ros_websocket.send(rbj.get_json_unsubscribe(message))
+            if message in ALLOWED_TOPICS_READ:
+                self.ros_websocket.send(rbj.get_json_unsubscribe(message))
+        # publish message to topic
         elif type_of_message == "publish_to_topic":
             topic = text_data_json['topic']
-            self.ros_websocket.send(rbj.get_json_publish_string(topic, message))
+            if topic in ALLOWED_TOPICS_WRITE:
+                self.ros_websocket.send(rbj.get_json_publish_string(topic, message))
                 

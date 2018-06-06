@@ -5,4 +5,7 @@ Created on May 25, 2018
 '''
 ALLOWED_TOPICS_READ = [
     '/hc04',
-    '/my_topic',]
+    '/my_topic',
+    '/fr/feedback']
+
+ALLOWED_TOPICS_WRITE = ALLOWED_TOPICS_READ

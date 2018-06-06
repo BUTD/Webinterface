@@ -26,5 +26,26 @@
     	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
     		'", "message":"'+message+'"}')
     }
+    
+    function callbackClickDriveBackward(){
+    	topic = "/hc04";
+    	message = "Drive backward!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+    
+    function callbackClickDriveLeft(){
+    	topic = "/hc04";
+    	message = "Drive left!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+    
+    function callbackClickDriveRight(){
+    	topic = "/hc04";
+    	message = "Drive right!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
 </script>
 </html>

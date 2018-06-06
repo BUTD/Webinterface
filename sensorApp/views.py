@@ -10,3 +10,6 @@ def sensor(request):
 
 def drive(request):
     return render(request, 'sensorApp/drive.html', {})
+
+def motors(request):
+    return render(request, 'sensorApp/motors.html', {})

@@ -1,0 +1,18 @@
+Topics für Webinterface:
+
+/fr/feeback (v.a. measured_velocity, measured_position)
+
+{'motor_power': 0.0, 'supply_current': 0.0, 'measured_velocity': 0.0, 
+'measured_position': 0.0, 'channel_temperature': 0.0, 
+'header': {'frame_id': '', 'stamp': {'secs': 1528292458, 'nsecs': 417759972}, 
+'seq': 69158}, 'motor_current': 0.0, 'motor_temperature': 93.7480239868164, 
+'commanded_velocity': 0.0, 'supply_voltage': 25.600000381469727}
+
+/fl/..
+/br/..
+/bl/..
+
+/odom
+/cmd_vel
+
+js-Funktionen zentral ablegen und inkludieren wo benötigt

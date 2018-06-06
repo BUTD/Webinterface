@@ -2,18 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Sensor</title>
+    <title>Motor Sensors</title>
 </head>
 <body>
-	ROS topic: <input type="text" id="rosTopic">
-	<input type="button" value="Subscribe" onclick="subscribeToTopicFromTextField()">
-	{% for this_topic in topics %}
-	<p id="topicSelectors">
-		<input id="checkBox" name="{{this_topic}}" type="checkbox" onclick="callbackClickTopic(this)">{{this_topic}}
-	</p>
-	{% endfor %}
-	<input type="button" value="Send Hello" onclick="callbackClickPublishHello()">
-	<p id="returnMessage"></p>
+	<input id="checkBox" name="/fr/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fr/feedback<br/>
     <textarea id="sensor-log" cols="50" rows="20"></textarea><br/>
 </body>
 
@@ -23,22 +15,16 @@
 
     sensorSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var messageText = data['message']['data'];
+        var message = "measured velocity = " + data['message']['measured_velocity'] + '\n';
         var textarea = document.querySelector('#sensor-log');
-        textarea.value += (messageText + '\n');
+        textarea.value += (message);
         textarea.scrollTop = textarea.scrollHeight;
     };
 
     sensorSocket.onclose = function(e) {
         console.error('Sensor socket closed unexpectedly');
     };
-    
-    function subscribeToTopicFromTextField() {
-    	var topic;
-    	topic = document.getElementById("rosTopic").value;
-    	subscribeToTopic(topic);
-    }
-    
+    q
     function subscribeToTopic(topic) {
     	var returnMessage;
     	returnMessage = "Subscribed to topic " + topic;
@@ -63,12 +49,5 @@
     		unsubscribeFromTopic(e.name);
     	}
     }
-    
-    function callbackClickPublishHello(){
-    	topic = "/hc04";
-    	message = "Hello from button!"
-    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
-    		'", "message":"'+message+'"}')
-    }
 </script>
-</html>
+</html>  
