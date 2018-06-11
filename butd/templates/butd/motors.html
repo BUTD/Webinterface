@@ -1,0 +1,138 @@
+{% extends "butd/base.html" %}
+
+{% block content %} 
+<input id="checkBox" name="/fr/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fr/feedback<br/>
+<input id="checkBox" name="/fl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fl/feedback<br/>
+<input id="checkBox" name="/br/feedback" type="checkbox" onclick="callbackClickTopic(this)">/br/feedback<br/>
+<input id="checkBox" name="/bl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/bl/feedback<br/>
+<input id="checkBox" name="/test_topic1" type="checkbox" onclick="callbackClickTopic(this)">/test_topic1<br/>
+<input id="checkBox" name="/test_topic2" type="checkbox" onclick="callbackClickTopic(this)">/test_topic2<br/>
+
+<canvas id="myChart" width="100" height="50"></canvas><br/>
+<!-- <textarea id="sensor-log" cols="50" rows="5"></textarea><br/>  -->
+{% endblock content %}
+
+{% block scripts %}
+{% load static %}
+<script src="{% static 'js/Chart.min.js' %}"></script>
+<script>
+	// websocket
+    var sensorSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/sensor/');
+    
+    //chart
+    var counter = 0;
+    var maxPoints = 50;
+    var config = {
+	    type: 'scatter',
+	    data: {
+	        datasets: [{
+	        	fill: false,
+	        	showLine: true,
+	        	borderColor: '#ff6384',
+	            label: 'velocity 1',
+	            data: []
+	        },
+	        {
+	        	fill: false,
+	        	showLine: true,
+	        	borderColor: '#36a2eb',
+	            label: 'velocity 2',
+	            data: []
+	        },
+	        {
+	        	fill: false,
+	        	showLine: true,
+	        	borderColor: '#cc65fe',
+	            label: 'velocity 3',
+	            data: []
+	        },{
+	        	fill: false,
+	        	showLine: true,
+	        	borderColor: '#ffce56',
+	            label: 'velocity 4',
+	            data: []
+	        }]
+	    },
+	    options: {
+	    	animation: {
+	    		duration: 0,
+	    	},
+	    	elements: {
+	    		line: {
+	    			tension: 0, //no bezier
+	    		}
+	    	},
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero:true
+	                }
+	            }]
+	        }
+	    }
+	};
+	
+	// create chart
+    window.onload = function() {
+		var ctx = document.getElementById('myChart').getContext('2d');
+		window.myLine = new Chart(ctx, config);
+	};
+	
+	// websocket callbacks
+	sensorSocket.onclose = function(e) {
+        console.error('Sensor socket closed unexpectedly');
+    };
+	
+	sensorSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var topic = data['topic'];
+        var id = 0;
+        switch (topic){
+        	case '/test_topic1':
+        		id = 0;
+        		break;
+        	case '/test_topic2':
+        		id = 1;
+        		break;
+        	case '/test_topic3':
+        		id = 2;
+        		break;
+        	case '/test_topic4':
+        		id = 3;
+        		break;
+        	
+        }
+        // add to chart
+        if (counter++>=maxPoints){
+        	counter = 1;
+        };
+        var time = data['message']['header']['stamp']['secs'] % 10000 + 
+        	Math.round(data['message']['header']['stamp']['nsecs']/1E6)/1000;
+        var newPoint = {x: time, y: data['message']['measured_velocity']}
+        if (config.data.datasets[id].data.push(newPoint)>maxPoints){
+        	config.data.datasets[id].data.splice(0,1);
+		};
+        window.myLine.update();
+    };
+    
+    function subscribeToTopic(topic) {
+    	// send request to websocket consumer
+    	sensorSocket.send('{"type":"subscribe_to_topic", "message":"'+topic+'"}')
+    }
+    
+    function unsubscribeFromTopic(topic) {
+    	// send request to websocket consumer
+    	sensorSocket.send('{"type":"unsubscribe_from_topic", "message":"'+topic+'"}')
+    }
+    
+    function callbackClickTopic(e){
+    	if (e.checked){
+    		subscribeToTopic(e.name);
+    	}
+    	else{
+    		unsubscribeFromTopic(e.name);
+    	}
+    }
+</script>
+{% endblock scripts %}

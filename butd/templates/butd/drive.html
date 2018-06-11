@@ -1,0 +1,56 @@
+{% extends "butd/base.html" %}
+
+{% block content %}
+<h1>Click to drive...</h1>
+<input type="button" value="Drive forward!" onclick="callbackClickDriveForward()">
+<input type="button" value="Drive backward" onclick="callbackClickDriveBackward()">
+<input type="button" value="Drive right!" onclick="callbackClickDriveRight()">
+<input type="button" value="Drive left!" onclick="callbackClickDriveLeft()"><br /)>
+<input type="button" value="Stop!" onclick="callbackClickStop()">
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var sensorSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/sensor/');
+
+    sensorSocket.onclose = function(e) {
+        console.error('Sensor socket closed unexpectedly');
+    };
+    
+    function callbackClickDriveForward(){
+    	topic = "/hc04";
+    	message = "Drive forward!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+    
+    function callbackClickDriveBackward(){
+    	topic = "/hc04";
+    	message = "Drive backward!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+    
+    function callbackClickDriveLeft(){
+    	topic = "/hc04";
+    	message = "Drive left!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+    
+    function callbackClickDriveRight(){
+    	topic = "/hc04";
+    	message = "Drive right!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+    
+    function callbackClickStop(){
+    	topic = "/hc04";
+    	message = "Stop Robot!"
+    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
+    		'", "message":"'+message+'"}')
+    }
+</script>
+{% endblock scripts %}

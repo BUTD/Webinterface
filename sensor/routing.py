@@ -5,12 +5,12 @@ Created on May 18, 2018
 '''
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-import sensorApp.routing
+import butd.routing
 
 application = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(
         URLRouter(
-            sensorApp.routing.websocket_urlpatterns
+            butd.routing.websocket_urlpatterns
         )
     ),
     })

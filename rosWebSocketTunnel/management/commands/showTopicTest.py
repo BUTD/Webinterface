@@ -26,7 +26,7 @@ def on_message(ws, message_json):
     print(message)
     # forward message to Django Channel layer
     # filters could be applied here
-    # messages come from sensorApp.consumers
+    # messages come from butd.consumers
     async_to_sync(channel_layer.group_send)(
         'sensorGroup',
         {'type': 'sensor_message', 'message': message}

@@ -16,3 +16,4 @@ Topics für Webinterface:
 /cmd_vel
 
 js-Funktionen zentral ablegen und inkludieren wo benötigt
+data: "{\"topic\": \"/test_topic1\", \"message\": {\"motor_current\": 4.776659965515137, \"motor_power\": 2.0631165504455566, \"channel_temperature\": 7.574196815490723, \"header\": {\"stamp\": {\"nsecs\": 109661102, \"secs\": 1528636282}, \"frame_id\": \"\", \"seq\": 50825}, \"measured_position\": 4.062140941619873, \"measured_velocity\": 1.1496257781982422, \"supply_current\": 7.315975666046143, \"commanded_velocity\": 7.305592060089111, \"supply_voltage\": 8.428874015808105, \"motor_temperature\": 4.236496448516846}}"
