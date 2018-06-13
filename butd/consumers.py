@@ -22,12 +22,12 @@ class SensorConsumer(WebsocketConsumer):
         # open websocket at start
         def on_message(ws, message_json):
             # is called on incoming message from ROS's websocket
-            print("Received message from ROS...")
+            # print("Received message from ROS...")
             message_dict = rbj.get_message_from_json(message_json)
             # message = message_dict.get("msg").get("data")
             message = message_dict.get("msg")
             topic = message_dict.get("topic")
-            print(message_dict.get("topic"))
+            # print(message_dict.get("topic"))
             # send to web page
             self.send(text_data=json.dumps({
                 'message': message,

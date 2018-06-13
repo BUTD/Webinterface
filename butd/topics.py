@@ -10,6 +10,8 @@ TOPICS_TEST = {
     '/test_topic',
     '/test_topic1',
     '/test_topic2',
+    '/test_topic3',
+    '/test_topic4',
     }
 
 TOPICS_MOTOR = {
@@ -17,6 +19,7 @@ TOPICS_MOTOR = {
     '/fl/feedback',
     '/br/feedback',
     '/bl/feedback',
+    '/odom',
     }
 
 ALLOWED_TOPICS_READ = TOPICS_TEST|TOPICS_MOTOR

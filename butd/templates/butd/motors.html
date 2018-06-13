@@ -5,25 +5,38 @@
 <input id="checkBox" name="/fl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fl/feedback<br/>
 <input id="checkBox" name="/br/feedback" type="checkbox" onclick="callbackClickTopic(this)">/br/feedback<br/>
 <input id="checkBox" name="/bl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/bl/feedback<br/>
+<input id="checkBox" name="/odom" type="checkbox" onclick="callbackClickTopic(this)">/odom<br/>
 <input id="checkBox" name="/test_topic1" type="checkbox" onclick="callbackClickTopic(this)">/test_topic1<br/>
 <input id="checkBox" name="/test_topic2" type="checkbox" onclick="callbackClickTopic(this)">/test_topic2<br/>
+<input id="checkBox" name="/test_topic3" type="checkbox" onclick="callbackClickTopic(this)">/test_topic3<br/>
+<input id="checkBox" name="/test_topic4" type="checkbox" onclick="callbackClickTopic(this)">/test_topic4<br/>
 
 <canvas id="myChart" width="100" height="50"></canvas><br/>
+<canvas id="myChart2" width="100" height="50"></canvas><br/>
 <!-- <textarea id="sensor-log" cols="50" rows="5"></textarea><br/>  -->
 {% endblock content %}
 
 {% block scripts %}
 {% load static %}
 <script src="{% static 'js/Chart.min.js' %}"></script>
+<script src="{% static 'js/DataCache.js' %}"></script>
 <script>
 	// websocket
     var sensorSocket = new WebSocket(
         'ws://' + window.location.host + '/ws/sensor/');
     
     //chart
-    var counter = 0;
-    var maxPoints = 50;
-    var config = {
+    var maxPoints = 20;
+    var averageWindow = 25;
+    var cacheVelocity = [[],[],[],[]];
+    var cacheTimeVelocity = [[],[],[],[]];
+    var cacheCounterVelocity = [0, 0, 0, 0];
+    var cacheOdometry = [[],[],[],[],[],[]]; // for pose.pose.position.x, 
+    	//pose.pose.position.y and pose.pose.orientation.z,
+    	//twist.twist.linear.x, twist.twist.linear.x, twist.twist.angular.z
+    var cacheTimeOdometry = [];
+    var cacheCounterOdometry = 0;
+    var configPlotVelocityFeedback = {
 	    type: 'scatter',
 	    data: {
 	        datasets: [{
@@ -72,11 +85,56 @@
 	        }
 	    }
 	};
+    var configPlotOdometryVelocity = {
+    	    type: 'scatter',
+    	    data: {
+    	        datasets: [{
+    	        	fill: false,
+    	        	showLine: true,
+    	        	borderColor: '#ff6384',
+    	            label: 'velocity x',
+    	            data: []
+    	        },
+    	        {
+    	        	fill: false,
+    	        	showLine: true,
+    	        	borderColor: '#36a2eb',
+    	            label: 'velocity y',
+    	            data: []
+    	        },
+    	        {
+    	        	fill: false,
+    	        	showLine: true,
+    	        	borderColor: '#cc65fe',
+    	            label: 'velocity z',
+    	            data: []
+    	        }]
+    	    },
+    	    options: {
+    	    	animation: {
+    	    		duration: 0,
+    	    	},
+    	    	elements: {
+    	    		line: {
+    	    			tension: 0, //no bezier
+    	    		}
+    	    	},
+    	        scales: {
+    	            yAxes: [{
+    	                ticks: {
+    	                    beginAtZero:true
+    	                }
+    	            }]
+    	        }
+    	    }
+    	};
 	
 	// create chart
     window.onload = function() {
 		var ctx = document.getElementById('myChart').getContext('2d');
-		window.myLine = new Chart(ctx, config);
+		window.myLine1 = new Chart(ctx, configPlotVelocityFeedback);
+		var ctx2 = document.getElementById('myChart2').getContext('2d');
+		window.myLine2 = new Chart(ctx2, configPlotOdometryVelocity);
 	};
 	
 	// websocket callbacks
@@ -88,32 +146,99 @@
         var data = JSON.parse(e.data);
         var topic = data['topic'];
         var id = 0;
+        // feedback topics
+        var isFeedbackTopic = false;
         switch (topic){
-        	case '/test_topic1':
-        		id = 0;
-        		break;
-        	case '/test_topic2':
-        		id = 1;
-        		break;
-        	case '/test_topic3':
-        		id = 2;
-        		break;
-        	case '/test_topic4':
-        		id = 3;
-        		break;
-        	
+	    	case '/fr/feedback':
+	    	case '/test_topic1':
+	    		isFeedbackTopic = true;
+	    		id = 0;
+	    		break;
+	    	case '/fl/feedback':
+	    	case '/test_topic2':
+	    		isFeedbackTopic = true;
+	    		id = 1;
+	    		break;
+	    	case '/br/feedback':
+	    	case '/test_topic3':
+	    		isFeedbackTopic = true;
+	    		id = 2;
+	    		break;
+	    	case '/bl/feedback':
+	    	case '/test_topic4':
+	    		isFeedbackTopic = true;
+	    		id = 3;
+	    		break;
+	    }
+        if (isFeedbackTopic){
+	             
+	        var time = data['message']['header']['stamp']['secs'] % 10000 + 
+	        	Math.round(data['message']['header']['stamp']['nsecs']/1E6)/1000;
+	        var velocity = data['message']['measured_velocity'];
+	     	// add to cache
+	        cacheVelocity[id].push(velocity);
+	        cacheTimeVelocity[id].push(time);
+	        // calculate average and clear cache if full
+	        if (cacheCounterVelocity[id]++==averageWindow){
+	        	cacheCounterVelocity[id]=0;
+	        	// todo: divide by correct number 
+	        	var meanVelocity = cacheVelocity[id].reduce(function(acc, val) { return acc + val; })/averageWindow;
+	        	var meanTime = cacheTimeVelocity[id].reduce(function(acc, val) { return acc + val; })/averageWindow;
+	        	cacheVelocity[id] = [];
+	        	cacheTimeVelocity[id] = [];
+	        	// add to chart
+	        	var newPoint = {x: meanTime, y: meanVelocity}
+	            if (configPlotVelocityFeedback.data.datasets[id].data.push(newPoint)>maxPoints){
+	            	configPlotVelocityFeedback.data.datasets[id].data.splice(0,1);
+	    		};
+	            window.myLine1.update();
+	        }
         }
-        // add to chart
-        if (counter++>=maxPoints){
-        	counter = 1;
-        };
-        var time = data['message']['header']['stamp']['secs'] % 10000 + 
-        	Math.round(data['message']['header']['stamp']['nsecs']/1E6)/1000;
-        var newPoint = {x: time, y: data['message']['measured_velocity']}
-        if (config.data.datasets[id].data.push(newPoint)>maxPoints){
-        	config.data.datasets[id].data.splice(0,1);
-		};
-        window.myLine.update();
+        
+        //odometry topic
+        if (topic=='/odom'){
+        		var time = data['message']['header']['stamp']['secs'] % 10000 + 
+	        	Math.round(data['message']['header']['stamp']['nsecs']/1E6)/1000;
+	        var x = data['message']['pose']['pose']['position']['x'];
+	        var y = data['message']['pose']['pose']['position']['y'];
+	        var z = data['message']['pose']['pose']['orientation']['z'];
+	        var vx = data['message']['twist']['twist']['linear']['x'];
+	        var vy = data['message']['twist']['twist']['linear']['y'];
+	        var vz = data['message']['twist']['twist']['angular']['z'];
+	     	// add to cache
+	        cacheOdometry[0].push(x);
+	     	cacheOdometry[1].push(y);
+	     	cacheOdometry[2].push(z);
+	     	cacheOdometry[3].push(vx);
+	     	cacheOdometry[4].push(vy);
+	     	cacheOdometry[5].push(vz);
+	        cacheTimeOdometry.push(time);
+	        // calculate average and clear cache if full
+	        if (cacheCounterOdometry++==averageWindow){
+	        	cacheCounterOdometry=0;
+	        	// todo: divide by correct number 
+	        	var meanVX = cacheOdometry[3].reduce(function(acc, val) { return acc + val; })/averageWindow;
+	        	var meanVY = cacheOdometry[4].reduce(function(acc, val) { return acc + val; })/averageWindow;
+	        	var meanVZ = cacheOdometry[5].reduce(function(acc, val) { return acc + val; })/averageWindow;
+	        	var meanTimeOdometry = cacheTimeOdometry.reduce(function(acc, val) { return acc + val; })/averageWindow;
+	        	cacheOdometry = [[],[],[],[],[],[]];
+	        	cacheTimeOdometry = [];
+	        	// add velocities to chart myLine2
+	        	var newPoint = {x: meanTimeOdometry, y: meanVX}
+	            if (configPlotOdometryVelocity.data.datasets[0].data.push(newPoint)>maxPoints){
+	            	configPlotOdometryVelocity.data.datasets[0].data.splice(0,1);
+	    		};
+	    		var newPoint = {x: meanTimeOdometry, y: meanVY}
+	            if (configPlotOdometryVelocity.data.datasets[1].data.push(newPoint)>maxPoints){
+	            	configPlotOdometryVelocity.data.datasets[1].data.splice(0,1);
+	    		};
+	    		var newPoint = {x: meanTimeOdometry, y: meanVZ}
+	            if (configPlotOdometryVelocity.data.datasets[2].data.push(newPoint)>maxPoints){
+	            	configPlotOdometryVelocity.data.datasets[2].data.splice(0,1);
+	    		};
+	            window.myLine2.update();
+	        }
+        }
     };
     
     function subscribeToTopic(topic) {
