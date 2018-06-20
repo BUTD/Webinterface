@@ -44,3 +44,8 @@ DataCache.prototype.getAveragesAndClear = function(){
 //c.addNumbers(numbers);
 //c.addNumbers(numbers);
 //console.log(c.getAveragesAndClear());
+
+//
+//var test = [new DataCache(2,2),new DataCache(3,2), new DataCache(4,5)]
+//test[1].addNumbers([1,2,3])
+//console.log(test[1].cache)

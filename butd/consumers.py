@@ -14,6 +14,8 @@ import threading
 
 class SensorConsumer(WebsocketConsumer):
     def connect(self):
+        # accept connection
+        self.accept()
         # gruppe einstellen auf "sensorGroup"
 #         self.group_name = 'sensorGroup'
 #         async_to_sync(self.channel_layer.group_add)(
@@ -52,8 +54,6 @@ class SensorConsumer(WebsocketConsumer):
         self.wst.daemon = True
         self.wst.start()
         print("Connection to ROS websocket established.")
-        # accept connection
-        self.accept()
     
     def disconnect(self, code):
         self.ros_websocket.close()
