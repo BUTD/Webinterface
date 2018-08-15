@@ -86,4 +86,11 @@ class SensorConsumer(WebsocketConsumer):
             topic = text_data_json['topic']
             if topic in ALLOWED_TOPICS_WRITE:
                 self.ros_websocket.send(rbj.get_json_publish_string(topic, message))
+        # special message to stop robot
+        elif type_of_message == "stop_robot":
+            topic = text_data_json['topic']
+            if topic in ALLOWED_TOPICS_WRITE:
+                self.ros_websocket.send(rbj.get_json_publish_stop_message(topic))
+        
+        
                 

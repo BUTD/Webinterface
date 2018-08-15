@@ -1,19 +1,42 @@
 {% extends "butd/base.html" %}
 
-{% block content %} 
-<input id="checkBox" name="/fr/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fr/feedback<br/>
-<input id="checkBox" name="/fl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fl/feedback<br/>
-<input id="checkBox" name="/br/feedback" type="checkbox" onclick="callbackClickTopic(this)">/br/feedback<br/>
-<input id="checkBox" name="/bl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/bl/feedback<br/>
-<input id="checkBox" name="/odom" type="checkbox" onclick="callbackClickTopic(this)">/odom<br/>
-<input id="checkBox" name="/test_topic1" type="checkbox" onclick="callbackClickTopic(this)">/test_topic1<br/>
-<input id="checkBox" name="/test_topic2" type="checkbox" onclick="callbackClickTopic(this)">/test_topic2<br/>
-<input id="checkBox" name="/test_topic3" type="checkbox" onclick="callbackClickTopic(this)">/test_topic3<br/>
-<input id="checkBox" name="/test_topic4" type="checkbox" onclick="callbackClickTopic(this)">/test_topic4<br/>
+{% block content %}
+<!-- <div class="card mb-3"> -->
+<!--   <div class="card-header"> -->
+<!--     <i class="fa fa-area-chart"></i>Topics</div> -->
+<!--   <div class="card-body"> -->
+<!--     <input id="checkBox" name="/fr/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fr/feedback<br/> -->
+<!-- 	<input id="checkBox" name="/fl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/fl/feedback<br/> -->
+<!-- 	<input id="checkBox" name="/br/feedback" type="checkbox" onclick="callbackClickTopic(this)">/br/feedback<br/> -->
+<!-- 	<input id="checkBox" name="/bl/feedback" type="checkbox" onclick="callbackClickTopic(this)">/bl/feedback<br/> -->
+<!-- 	<input id="checkBox" name="/odom" type="checkbox" onclick="callbackClickTopic(this)">/odom<br/> -->
+<!-- 	<input id="checkBox" name="/test_topic1" type="checkbox" onclick="callbackClickTopic(this)">/test_topic1<br/> -->
+<!-- 	<input id="checkBox" name="/test_topic2" type="checkbox" onclick="callbackClickTopic(this)">/test_topic2<br/> -->
+<!-- 	<input id="checkBox" name="/test_topic3" type="checkbox" onclick="callbackClickTopic(this)">/test_topic3<br/> -->
+<!-- 	<input id="checkBox" name="/test_topic4" type="checkbox" onclick="callbackClickTopic(this)">/test_topic4<br/> -->
+<!--   </div> -->
+<!--   <div class="card-footer small text-muted">Choose topics to display...</div> -->
+<!-- </div> -->
 
-<canvas id="myChart" width="100" height="50"></canvas><br/>
-<canvas id="myChart2" width="100" height="50"></canvas><br/>
-<canvas id="myChart3" width="100" height="50"></canvas><br/>
+<div class="card mb-3">
+  <div class="card-header">
+    <i class="fa fa-area-chart"></i>Velocity Feedbacks from Motor Controller</div>
+  <div class="card-body">
+    <canvas id="myChart" width="100" height="50"></canvas>
+  </div>
+  <div class="card-footer small text-muted">Checkmark topics /fr/feedback, /fl/feedback, /br/feedback, /bl/feedback to show plot</div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    <i class="fa fa-area-chart"></i>Odometry</div>
+  <div class="card-body">
+    <canvas id="myChart2" width="100" height="50"></canvas><br/>
+	<canvas id="myChart3" width="100" height="50"></canvas>
+  </div>
+  <div class="card-footer small text-muted">Checkmark topic /odom to show plot</div>
+</div>
+
 <!-- <textarea id="sensor-log" cols="50" rows="5"></textarea><br/>  -->
 {% endblock content %}
 
@@ -177,6 +200,12 @@
 	    subscribeToTopic("/test_topic2");
 	    subscribeToTopic("/test_topic3");
 	    subscribeToTopic("/test_topic4");
+	    
+	    subscribeToTopic("/fr/feedback");
+		subscribeToTopic("/fl/feedback");
+		subscribeToTopic("/br/feedback");
+		subscribeToTopic("/bl/feedback");
+		subscribeToTopic("/odom");
 	})
     
 </script>

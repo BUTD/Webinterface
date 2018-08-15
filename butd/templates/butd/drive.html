@@ -1,22 +1,36 @@
 {% extends "butd/base.html" %}
 
 {% block content %}
-<h1>Click to drive...</h1>
-<input type="button" value="Drive forward!" onclick="callbackClickDriveForward()">
-<input type="button" value="Drive backward" onclick="callbackClickDriveBackward()">
-<input type="button" value="Drive right!" onclick="callbackClickDriveRight()">
-<input type="button" value="Drive left!" onclick="callbackClickDriveLeft()"><br /)>
-<input type="button" value="Stop!" onclick="callbackClickStop()">
+<div class="card mb-3">
+  <div class="card-header">
+    <i class="fa fa-stop"></i> Robot Stop Button</div>
+  <div class="card-body">
+    <input type="button" value="Stop Robot!" onclick="callbackClickStop()">
+  </div>
+  <div class="card-footer small text-muted">Push buttons to operate...</div>
+</div>
+<!-- <h1>Click to drive...</h1> -->
+<!-- <input type="button" value="Drive forward!" onclick="callbackClickDriveForward()"> -->
+<!-- <input type="button" value="Drive backward" onclick="callbackClickDriveBackward()"> -->
+<!-- <input type="button" value="Drive right!" onclick="callbackClickDriveRight()"> -->
+<!-- <input type="button" value="Drive left!" onclick="callbackClickDriveLeft()"><br /> -->
+<!-- <input type="button" value="Stop!" onclick="callbackClickStop()"> -->
 {% endblock content %}
 
 {% block scripts %}
-<script>
-    var sensorSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/sensor/');
+{% load static %}
 
-    sensorSocket.onclose = function(e) {
-        console.error('Sensor socket closed unexpectedly');
-    };
+<!-- Websocket Library from Channels -->
+<script src = "{% static 'channels/js/websocketbridge.js' %}"></script>
+
+<script>
+	//websocket receiver from Django Channels
+	const webSocketBridge = new channels.WebSocketBridge();
+	webSocketBridge.connect('ws://' + window.location.host + '/ws/sensor/');
+	
+	webSocketBridge.socket.addEventListener('open', function() {
+	    console.log("Connected to WebSocket");
+	})
     
     function callbackClickDriveForward(){
     	topic = "/hc04";
@@ -47,10 +61,9 @@
     }
     
     function callbackClickStop(){
-    	topic = "/hc04";
-    	message = "Stop Robot!"
-    	sensorSocket.send('{"type":"publish_to_topic", "topic":"'+topic+
-    		'", "message":"'+message+'"}')
+    	topic = "/move_base/cancel";
+    	message = "{}"
+    	webSocketBridge.send({type:"stop_robot", message: "stop", topic: topic});
     }
 </script>
 {% endblock scripts %}
