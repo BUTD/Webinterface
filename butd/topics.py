@@ -23,9 +23,17 @@ TOPICS_MOTOR = {
     }
 
 TOPICS_SAFETY = {
-    '/move_base/cancel'
+    '/move_base/cancel',
+    '/qr_follow/cancel',
+    '/demo_server/cancel'
+
     }
 
-ALLOWED_TOPICS_READ = TOPICS_TEST|TOPICS_MOTOR|TOPICS_SAFETY
+TOPICS_COMMAND = {
+    '/zalamander/mode',
+    '/zalamander/call'
+    }
+
+ALLOWED_TOPICS_READ = TOPICS_TEST|TOPICS_MOTOR|TOPICS_SAFETY|TOPICS_COMMAND
 
 ALLOWED_TOPICS_WRITE = ALLOWED_TOPICS_READ

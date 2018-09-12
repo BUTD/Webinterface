@@ -3,9 +3,22 @@
 {% block content %}
 <div class="card mb-3">
   <div class="card-header">
-    <i class="fa fa-stop"></i> Robot Stop Button</div>
+    <i class="fa fa-stop"></i> ZALamander Demos</div>
+  <div class="card-body">
+    <input type="button" value="Follow Zeppelin!" onclick="callbackClickFollow()">
+    <input type="button" value="Stop Follow Zeppelin!" onclick="callbackClickStopFollow()">
+    <input type="button" value="Play Demo!" onclick="callbackClickDemo()">
+    <input type="button" value="Stop Demo!" onclick="callbackClickStopDemo()">
+    
+  </div>
+  <div class="card-footer small text-muted">Push buttons to operate...</div>
+</div>
+<div class="card mb-3">
+  <div class="card-header">
+    <i class="fa fa-stop"></i> ZALamander Control</div>
   <div class="card-body">
     <input type="button" value="Stop Robot!" onclick="callbackClickStop()">
+    <input type="button" value="Reset Robot!" onclick="callbackClickReset()">    
   </div>
   <div class="card-footer small text-muted">Push buttons to operate...</div>
 </div>
@@ -15,6 +28,7 @@
 <!-- <input type="button" value="Drive right!" onclick="callbackClickDriveRight()"> -->
 <!-- <input type="button" value="Drive left!" onclick="callbackClickDriveLeft()"><br /> -->
 <!-- <input type="button" value="Stop!" onclick="callbackClickStop()"> -->
+<!-- <input type="button" value="Rufen!" onclick="callbackClickCall()"> -->
 {% endblock content %}
 
 {% block scripts %}
@@ -64,6 +78,32 @@
     	topic = "/move_base/cancel";
     	message = "{}"
     	webSocketBridge.send({type:"stop_robot", message: "stop", topic: topic});
+    }
+    function callbackClickStopFollow(){
+    	topic = "/qr_follow/cancel";
+    	message = "{}"
+    	webSocketBridge.send({type:"stop_follow", message: "stop_follow", topic: topic});
+    }
+    
+    function callbackClickFollow(){
+    	topic = "/zalamander/mode";
+    	message = "{}"
+    	webSocketBridge.send({type:"std_msgs/Int8", message: "follow", topic: topic});
+    }
+    function callbackClickDemo(){
+    	topic = "/zalamander/mode";
+    	message = "{}"
+    	webSocketBridge.send({type:"std_msgs/Int8", message: "demo", topic: topic});
+    }
+    function callbackClickReset(){
+    	topic = "/zalamander/mode";
+    	message = "{}"
+    	webSocketBridge.send({type:"std_msgs/Int8", message: "reset", topic: topic});
+    }
+    function callbackClickStopDemo(){
+    	topic = "/demo_server/cancel";
+    	message = "{}"
+    	webSocketBridge.send({type:"stop_robot", message: "stop_demo", topic: topic});
     }
 </script>
 {% endblock scripts %}

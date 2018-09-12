@@ -91,6 +91,21 @@ class SensorConsumer(WebsocketConsumer):
             topic = text_data_json['topic']
             if topic in ALLOWED_TOPICS_WRITE:
                 self.ros_websocket.send(rbj.get_json_publish_stop_message(topic))
-        
-        
+        elif type_of_message == "stop_follow":
+            topic = text_data_json['topic']
+            if topic in ALLOWED_TOPICS_WRITE:
+                self.ros_websocket.send(rbj.get_json_publish_stop_follow_message(topic))
+        elif type_of_message == "stop_demo":
+            topic = text_data_json['topic']
+            if topic in ALLOWED_TOPICS_WRITE:
+                self.ros_websocket.send(rbj.get_json_publish_stop_demo_message(topic))
+        elif type_of_message == "std_msgs/Int8":
+            topic = text_data_json['topic']
+            if topic in ALLOWED_TOPICS_WRITE:
+                if message == "demo":
+                    self.ros_websocket.send(rbj.get_json_publish_demo_message(topic))
+                elif message == "follow":
+                    self.ros_websocket.send(rbj.get_json_publish_follow_message(topic))
+                elif message == "reset":
+                    self.ros_websocket.send(rbj.get_json_publish_reset_message(topic))
                 
